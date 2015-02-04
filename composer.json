@@ -1,0 +1,17 @@
+{
+    "name": "soil/discover-bundle",
+    "version": "0.0.1",
+    "dist": {
+        "url": "https://github.com/soilby/discover-bundle",
+        "type": "vcs"
+    },
+    "autoload": {
+        "psr-4": {
+            "Soil\\": "src/Soil"
+        }
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony": "2.6.*"
+    }
+}
