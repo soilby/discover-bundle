@@ -1,0 +1,3 @@
+services:
+    soil_discover.service.resolver:
+        class: Soil\DiscoverBundle\Service\Resolver
