@@ -1,5 +1,8 @@
 <?php
-namespace Soil\NotificationBundle\Entity;
+namespace Soil\DiscoverBundle\Entity;
+use EasyRdf\Literal;
+use EasyRdf\Resource;
+
 /**
  * Created by PhpStorm.
  * User: fliak
@@ -10,24 +13,84 @@ namespace Soil\NotificationBundle\Entity;
 class Generic {
 
     protected $iriMap = [
-
+        'schema:name' => 'name',
+        '_origin' => '_origin'
     ];
 
+    /**
+     * Origin values
+     * @var array
+     */
+    protected $origin = [];
 
-    public function __construct(\EasyRdf\Graph $graph) {
-        $this->build($graph);
+
+    public static function support($type)    {
+        return true;
     }
 
-    public function build($graph)    {
-        $props = [];
-        foreach ($graph->resources() as $resource)  {
-            foreach ($resource->properties() as $propName)  {
-                $value = $resource->get($propName);
-                if (array_key_exists($propName, $this->iriMap)) {
-                    $propName = $this->iriMap[$propName];
-                }
-                $props[$propName] = $value;
+    public function __construct($type, $props) {
+        $this->build($props);
+    }
+
+    public function build($props)    {
+        $this->origin = $props;
+
+        foreach ($props as $propName => $propValue) {
+            $value = $this->transformValue($propValue, $propName);
+
+            if (array_key_exists($propName, $this->iriMap)) {
+                $parsedPropName = $this->iriMap[$propName];
+                $this->$parsedPropName = $value;
             }
+            else    {
+                $this->$propName = $value;
+            }
+
+
+        }
+    }
+
+    protected function transformValue($value, $name)    {
+        switch (true)   {
+            case is_scalar($value) || is_array($value):
+                return $value;
+
+            case $value instanceof Resource:
+                return $value->getUri();
+
+            case method_exists($value, '__toString'): //for Literal
+                return (string) $value;
+
+            default:
+                return $value;
+
+        }
+    }
+
+    public function getOriginValue($originPropName, $default = null)    {
+        if (array_key_exists($originPropName, $this->origin)) {
+            return $this->origin[$originPropName];
+        }
+
+        return $default;
+    }
+
+    public function getOriginPropName($parsedPropName)  {
+        return array_search($parsedPropName, $this->iriMap);
+    }
+
+
+    /**
+     * Add access by origin names
+     *
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name)    {
+        if (array_key_exists($name, $this->iriMap)) {
+            $parsedName = $this->iriMap[$name];
+
+            return $this->$parsedName;
         }
     }
 } 

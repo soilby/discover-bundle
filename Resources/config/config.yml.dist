@@ -1,0 +1,4 @@
+soil_discover:
+    entities_map:
+        - Soil\NotificationBundle\Entity\Agent
+

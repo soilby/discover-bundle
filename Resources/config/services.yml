@@ -1,3 +1,8 @@
 services:
     soil_discover.service.resolver:
         class: Soil\DiscoverBundle\Service\Resolver
+        arguments: [@soil_discover.entity_factory]
+
+    soil_discover.entity_factory:
+        class: Soil\DiscoverBundle\Entity\Factory\EntityFactory
+        arguments: [%entity_classes%]
