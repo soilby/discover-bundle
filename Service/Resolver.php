@@ -11,8 +11,16 @@ namespace Soil\DiscoverBundle\Service;
 
 use EasyRdf\Graph;
 use EasyRdf\RdfNamespace;
+use Soil\DiscoverBundle\Service\Exception\NothingLoadedException;
+use Symfony\Bridge\Monolog\Logger;
 
 class Resolver {
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
 
     protected $entityFactory;
 
@@ -22,17 +30,32 @@ class Resolver {
 
 
     public function getEntityForURI($uri, $getFirstOfClass = null)   {
+
+        $this->logger->addInfo('Try to discover ' . $uri);
+
+        if ($getFirstOfClass)   {
+            if ($getFirstOfClass === true)  {
+                $this->logger->addInfo('Caller expect first founded entity');
+            }
+            else    {
+                $this->logger->addInfo('Caller expect entity of class ' . $getFirstOfClass);
+            }
+        }
+
+
         $graph = new Graph();
         $number = $graph->load($uri);
         if ($number === 0)  {
-            throw new \Exception('Nothing loaded');
+            throw new NothingLoadedException('Nothing loaded for URI: ' . $uri);
         }
 
         $fetchedEntities = [];
 
-        foreach ($graph->resources() as $resource)  {
-            $types = ($type = $resource->type()) ? [$type] : [];
+        $resources = $graph->resources();
+        $this->logger->addInfo('Resources found: ' . count($resources));
 
+        foreach ($resources as $resource)  {
+            $types = ($type = $resource->type()) ? [$type] : [];
 
             $additionalTypeResource = $resource->get('schema:additionalType');
             if ($additionalTypeResource)    {
@@ -41,6 +64,8 @@ class Resolver {
             }
 
             $types = array_unique(array_merge($types, $resource->types()));
+
+            $this->logger->addInfo('Resource types: ' . implode(', ', $types));
 
             if (empty($types)) continue;
 
@@ -55,7 +80,12 @@ class Resolver {
             if ($getFirstOfClass)   { //hook for filter fetched entities
                 if (is_string($getFirstOfClass)) {
                     $classSpec = $this->entityFactory->detectEntityClass($types);
-                    if ($classSpec['className'] !== $getFirstOfClass) continue;
+                    if ($classSpec['className'] !== $getFirstOfClass) {
+                        $this->logger->addInfo('Skip entity ' . $classSpec['className']);
+                        continue;
+                    }
+
+                    $this->logger->addInfo('Found expected entity');
 
                     //return only one entity with specified type
                 }
@@ -68,8 +98,15 @@ class Resolver {
             }
         }
 
+        $this->logger->addInfo('Fetched entities: ' . count($fetchedEntities));
+
         return $fetchedEntities;
 
 
+    }
+
+
+    public function setLogger($logger)  {
+        $this->logger = $logger;
     }
 }

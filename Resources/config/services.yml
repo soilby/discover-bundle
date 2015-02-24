@@ -2,6 +2,10 @@ services:
     soil_discover.service.resolver:
         class: Soil\DiscoverBundle\Service\Resolver
         arguments: [@soil_discover.entity_factory]
+    calls:
+        - [setLogger, [@logger]]
+    tags:
+        - { name: monolog.logger, channel: queue }
 
     soil_discover.entity_factory:
         class: Soil\DiscoverBundle\Entity\Factory\EntityFactory

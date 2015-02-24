@@ -36,16 +36,15 @@ class Generic {
         $this->origin = $props;
 
         foreach ($props as $propName => $propValue) {
-            $value = $this->transformValue($propValue, $propName);
-
             if (array_key_exists($propName, $this->iriMap)) {
                 $parsedPropName = $this->iriMap[$propName];
+                $value = $this->transformValue($propValue, $parsedPropName);
                 $this->$parsedPropName = $value;
             }
             else    {
+                $value = $this->transformValue($propValue, $propName);
                 $this->$propName = $value;
             }
-
 
         }
     }
