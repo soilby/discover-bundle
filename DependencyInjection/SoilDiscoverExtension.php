@@ -2,10 +2,12 @@
 
 namespace Soil\DiscoverBundle\DependencyInjection;
 
+use Soil\DiscoverBundle\Http\Client;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use EasyRdf\Http;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -26,5 +28,9 @@ class SoilDiscoverExtension extends Extension
         $loader->load('services.yml');
 
         $container->setParameter('entity_classes', $config['entities_map']);
+
+
+        $httpClient = new Client();
+        Http::setDefaultHttpClient($httpClient);
     }
 }
