@@ -29,8 +29,5 @@ class SoilDiscoverExtension extends Extension
 
         $container->setParameter('entity_classes', $config['entities_map']);
 
-
-        $httpClient = new Client();
-        Http::setDefaultHttpClient($httpClient);
     }
 }

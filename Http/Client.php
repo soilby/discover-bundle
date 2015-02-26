@@ -13,7 +13,6 @@ class Client extends EasyRdfHttpClient {
             . $br
             . mb_convert_encoding($firstResponse->getRawBody(), 'HTML-ENTITIES', 'UTF-8');
 
-
         return Response::fromString($rawResponse);
     }
 } 
