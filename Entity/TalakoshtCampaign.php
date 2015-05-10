@@ -21,6 +21,7 @@ class TalakoshtCampaign extends Generic {
         switch ($type)  {
             case 'tal:TalakoshtCampaign':
                 $fields = [
+                    'schema:alternateName' => 'id',
                     'schema:name' => 'name',
                     'schema:author' => 'author',
                     'schema:image' => 'image',
