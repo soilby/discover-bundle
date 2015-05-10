@@ -92,7 +92,7 @@ class Resolver {
 
                 return $this->entityFactory->factory($types, $props);
 
-            }
+                }
             else    {
                 $fetchedEntities[] =  $this->entityFactory->factory($types, $props);
             }

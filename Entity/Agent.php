@@ -23,6 +23,7 @@ class Agent extends Generic {
                     'foaf:lastName' => 'lastName',
                     'foaf:name' => 'displayName',
                     'foaf:mbox' => 'mbox',
+                    'foaf:phone' => 'phone',
                     'foaf:img' => 'img',
                 ];
 

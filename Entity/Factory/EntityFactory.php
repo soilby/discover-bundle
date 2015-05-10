@@ -29,6 +29,7 @@ class EntityFactory {
                 }
 
                 if (call_user_func($callable, $type)) {
+                    var_dump(true);
                     return [
                         'className' => $className,
                         'type' => $type
@@ -37,7 +38,11 @@ class EntityFactory {
             }
         }
 
-        return false;
+        reset($types);
+        return [
+            'className' => 'Soil\DiscoverBundle\Entity\Generic',
+            'type' => current($types)
+        ];
     }
 
     public function factory($type, $properties)   {
