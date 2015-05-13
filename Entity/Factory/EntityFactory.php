@@ -8,7 +8,21 @@
 
 namespace Soil\DiscoverBundle\Entity\Factory;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use EasyRdf\Literal;
+use EasyRdf\Literal\Date;
+use EasyRdf\Literal\DateTime;
+use EasyRdf\Resource;
+use Monolog\Logger;
+
 class EntityFactory {
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+
     protected $entityClassesMap = [];
 
     public function __construct($entityClassesMap)  {
@@ -21,21 +35,15 @@ class EntityFactory {
         if (is_scalar($types)) $types = [$types];
 
         foreach ($types as $type) {
-            foreach ($this->entityClassesMap as $className) {
-                $callable = [$className, 'support'];
 
-                if (!is_callable($callable)) {
-                    throw new \Exception("Entities should implement static support method");
-                }
+            if (!array_key_exists($type, $this->entityClassesMap)) continue;
 
-                if (call_user_func($callable, $type)) {
-                    var_dump(true);
-                    return [
-                        'className' => $className,
-                        'type' => $type
-                    ];
-                }
-            }
+            $className = $this->entityClassesMap[$type];
+
+            return [
+                'className' => $className,
+                'type' => $type
+            ];
         }
 
         reset($types);
@@ -45,7 +53,7 @@ class EntityFactory {
         ];
     }
 
-    public function factory($type, $properties)   {
+    public function factory($type, $fields)   {
         $classSpec = $this->detectEntityClass($type);
         if (!$classSpec)    {
             return null;
@@ -54,7 +62,90 @@ class EntityFactory {
         $className = $classSpec['className'];
         $type = $classSpec['type'];
 
-        return new $className($type, $properties);
+        $object = new $className($type);
+
+        $annotationReader = new AnnotationReader();
+
+        $reflectionClass = new \ReflectionClass($object);
+
+        $properties = $reflectionClass->getProperties();
+
+
+        $fieldsMap = [];
+        foreach ($properties as $reflectionProperty)    {
+
+            $matchAnnotation = $annotationReader->getPropertyAnnotation($reflectionProperty, 'Soil\DiscoverBundle\Annotation\Match');
+
+            if ($matchAnnotation)    {
+                $match = $matchAnnotation->value;
+
+                $fieldsMap[$match] = $reflectionProperty->getName();
+            }
+        }
+
+        foreach ($fields as $field => $value)   {
+            if (array_key_exists($field, $fieldsMap))   {
+                $propertyName = $fieldsMap[$field];
+            }
+            else {
+                $propertyName = substr($field, strpos($field, ':') + 1);
+
+                if (!($reflectionClass->hasProperty($propertyName) || $reflectionClass->hasMethod('__set')))  {
+                    continue;
+                }
+            }
+
+
+            //detect value type
+            switch (true)   {
+                case is_scalar($value) || is_array($value):
+                case $value instanceof Literal:
+                    break;
+
+                case $value instanceof Resource:
+                    if ($value->type()) {
+
+                        $nestedProps = [];
+                        foreach ($value->properties() as $nestedPropertyName)  {
+                            $nestedPropertyValue = $value->get($nestedPropertyName);
+                            $nestedProps[$nestedPropertyName] = $nestedPropertyValue;
+                        }
+
+                        $nestedProps['_origin'] = $value->getUri();
+
+                        $value = $this->factory($value->types(), $nestedProps);
+
+                    }
+                    else    {
+                        $value = $value->getUri();
+                    }
+
+                    break;
+
+                default:
+                    break;
+
+            }
+
+            if ($reflectionClass->hasProperty($propertyName))   {
+                $property = $reflectionClass->getProperty($propertyName);
+                $property->setAccessible(true);
+                $property->setValue($object, $value);
+            }
+            else    {
+                //via set method
+                $object->$propertyName = $value;
+            }
+
+        }
+
+        return $object;
     }
 
-} 
+
+
+    public function setLogger($logger)  {
+        $this->logger = $logger;
+    }
+
+}

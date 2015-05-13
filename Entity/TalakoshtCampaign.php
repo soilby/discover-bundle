@@ -8,33 +8,79 @@
 
 namespace Soil\DiscoverBundle\Entity;
 
+use Soil\DiscoverBundle\Annotation as RDF;
 
 class TalakoshtCampaign extends Generic {
 
-    public static function support($type)    {
-        return $type === 'tal:TalakoshtCampaign';
+
+    protected $campaignType;
+
+    protected $image;
+
+    protected $name;
+
+    /**
+     * @var
+     * @RDF\Match("schema:alternateName")
+     */
+    protected $id;
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getCampaignType()
+    {
+        return $this->campaignType;
     }
 
-
-    public function __construct($type, $properties)   {
-
-        switch ($type)  {
-            case 'tal:TalakoshtCampaign':
-                $fields = [
-                    'schema:alternateName' => 'id',
-                    'schema:name' => 'name',
-                    'schema:author' => 'author',
-                    'schema:image' => 'image',
-                ];
-
-                break;
-
-            default:
-                $fields = [];
-        }
-
-        $this->iriMap = array_merge($this->iriMap, $fields);
-
-        parent::__construct($type, $properties);
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
-} 
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    /**
+     * @param mixed $image
+     */
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+}

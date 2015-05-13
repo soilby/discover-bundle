@@ -1,6 +1,4 @@
 <?php
-namespace Soil\DiscoverBundle\Entity;
-
 /**
  * Created by PhpStorm.
  * User: fliak
@@ -8,69 +6,138 @@ namespace Soil\DiscoverBundle\Entity;
  * Time: 11.42
  */
 
+
+namespace Soil\DiscoverBundle\Entity;
+
+use Soil\DiscoverBundle\Entity\Schema\ImageObject;
+
+use Soil\DiscoverBundle\Annotation as RDF;
+
+
 class Agent extends Generic {
 
-    public static function support($type)    {
-        return strtolower($type) === 'foaf:person';
-    }
 
-    public function __construct($type, $properties)   {
+    protected $mbox;
 
-        switch (strtolower($type))  {
-            case 'foaf:person':
-                $fields = [
-                    'foaf:firstName' => 'firstName',
-                    'foaf:lastName' => 'lastName',
-                    'foaf:name' => 'displayName',
-                    'foaf:mbox' => 'mbox',
-                    'foaf:phone' => 'phone',
-                    'foaf:img' => 'img',
-                ];
+    /**
+     * @var string
+     *
+     * @RDF\Match("foaf:firstName")
+     *
+     */
+    protected $firstName;
 
-                break;
-
-            default:
-                $fields = [];
-        }
-
-        $this->iriMap = array_merge($this->iriMap, $fields);
-
-        parent::__construct($type, $properties);
-    }
-
-
-    public $mbox;
-    public $firstName;
-    public $lastName;
-    public $displayName;
-    public $img;
-
-    public $uri;
+    protected $lastName;
 
 
     /**
-     * Transform mailto: URI to email address (crop mailto:)
+     * @var string
      *
-     * @param $value
-     * @param $name
+     * @RDF\Match("foaf:name")
      *
+     */
+    protected $displayName;
+
+    /**
+     * @var ImageObject
+     *
+     * @RDF\Match("foaf:image")
+     */
+    protected $img;
+
+    /**
      * @return string
      */
-    protected function transformValue($value, $name)    {
-        if ($name === 'mbox')   {
-            $value = (string) $value;
+    public function getDisplayName()
+    {
+        return $this->displayName;
+    }
 
-            if (strpos($value, 'mailto:') === 0) {
-                return substr($value, 7);
-            }
-            else    {
-                return $value;
-            }
+    /**
+     * @param string $displayName
+     */
+    public function setDisplayName($displayName)
+    {
+        $this->displayName = $displayName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string $firstName
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+
+    /**
+     * @return ImageObject
+     */
+    public function getImg()
+    {
+        return $this->img;
+    }
+
+    /**
+     * @param ImageObject $img
+     */
+    public function setImg($img)
+    {
+        $this->img = $img;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param mixed $lastName
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMbox()
+    {
+        return $this->mbox;
+    }
+
+
+    public function getEmail()  {
+        $mailURI = (string) $this->mbox;
+        $colonPosition = strpos($mailURI, ':');
+
+        if ($colonPosition === false) {
+            return $mailURI;
         }
         else    {
-            return parent::transformValue($value, $name);
+            return $email = substr($mailURI, $colonPosition + 1);
         }
     }
+
+    /**
+     * @param mixed $mbox
+     */
+    public function setMbox($mbox)
+    {
+        $this->mbox = $mbox;
+    }
+
 
 
 

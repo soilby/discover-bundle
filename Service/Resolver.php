@@ -80,8 +80,9 @@ class Resolver {
             if ($getFirstOfClass)   { //hook for filter fetched entities
                 if (is_string($getFirstOfClass)) {
                     $classSpec = $this->entityFactory->detectEntityClass($types);
+
                     if ($classSpec['className'] !== $getFirstOfClass) {
-                        $this->logger->addInfo('Skip entity ' . $classSpec['className']);
+                        $this->logger->addInfo('Skip entitySkip entity ' . $classSpec['className']);
                         continue;
                     }
 

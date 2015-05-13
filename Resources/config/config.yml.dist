@@ -1,4 +1,11 @@
 soil_discover:
     entities_map:
         - Soil\NotificationBundle\Entity\Agent
+            - foaf:person
+
+        - Soil\NotificationBundle\Entity\Comment
+            - schema:UserComments
+
+        - Soil\NotificationBundle\Entity\TalakoshtCampaign
+            - tal:TalakoshtCampaign
 

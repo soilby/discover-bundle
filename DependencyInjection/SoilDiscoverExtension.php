@@ -27,7 +27,8 @@ class SoilDiscoverExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $container->setParameter('entity_classes', $config['entities_map']);
+        $entitiesMap = $config['entities_map'];
+        $container->setParameter('entity_classes', $entitiesMap);
 
     }
 }

@@ -10,3 +10,7 @@ services:
     soil_discover.entity_factory:
         class: Soil\DiscoverBundle\Entity\Factory\EntityFactory
         arguments: [%entity_classes%]
+        calls:
+            - [setLogger, [@logger]]
+        tags:
+            - { name: monolog.logger, channel: queue }
