@@ -46,6 +46,14 @@ class Agent extends Generic {
     protected $img;
 
     /**
+     * @var
+     *
+     * @RDF\Match("foaf:locale")
+     *
+     */
+    protected $locale;
+
+    /**
      * @return string
      */
     public function getDisplayName()
@@ -137,6 +145,23 @@ class Agent extends Generic {
     {
         $this->mbox = $mbox;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param mixed $locale
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+    }
+
 
 
 
