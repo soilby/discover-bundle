@@ -14,14 +14,14 @@ class ImageObject extends Thing {
      * @var string
      *
      */
-    protected $thumbnail;
+    public $thumbnail;
 
     /**
      * @var string
      */
-    protected $caption;
+    public $caption;
 
-    protected $contentUrl;
+    public $contentUrl;
 
     /**
      * @return string

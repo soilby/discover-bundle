@@ -24,8 +24,16 @@ class Resolver {
 
     protected $entityFactory;
 
-    public function __construct($entityFactory) {
+    protected $namespacesConfig;
+
+    public function __construct($entityFactory, $namespacesConfig) {
         $this->entityFactory = $entityFactory;
+
+        $this->namespacesConfig = $namespacesConfig;
+
+        foreach ($this->namespacesConfig as $namespace => $uri) {
+            \EasyRdf\RdfNamespace::set($namespace, $uri);
+        }
     }
 
 

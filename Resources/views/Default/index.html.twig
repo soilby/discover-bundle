@@ -1,1 +1,17 @@
-Hello {{ name }}!
+<html>
+    <head>
+        <title>Result for {{ uri }}</title>
+    </head>
+    <body>
+        <div>Result for {{ uri }}:</div>
+
+        <div style="text-decoration: underline; font-weight: 200; padding: 20px;">{{ class }}</div>
+        <div>
+
+            {% include "SoilDiscoverBundle:Default:iteration.html.twig" with { graph: graph }  %}
+
+        </div>
+
+
+    </body>
+</html>

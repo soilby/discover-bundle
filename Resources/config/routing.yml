@@ -1,3 +1,5 @@
 soil_discover_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: SoilDiscoverBundle:Default:index }
+    path:     /discover/{entity_uri}
+    defaults: {       _controller: soil_discover.controller.discover_controller:discoverAction, expected_class: false }
+    requirements:
+        entity_uri: .+

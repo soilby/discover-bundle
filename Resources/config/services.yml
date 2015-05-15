@@ -1,7 +1,11 @@
 services:
+    soil_discover.controller.discover_controller:
+        class: Soil\DiscoverBundle\Controller\DefaultController
+        arguments: [@soil_discover.service.resolver, @templating]
+
     soil_discover.service.resolver:
         class: Soil\DiscoverBundle\Service\Resolver
-        arguments: [@soil_discover.entity_factory]
+        arguments: [@soil_discover.entity_factory, %semantic_namespaces%]
         calls:
             - [setLogger, [@logger]]
         tags:

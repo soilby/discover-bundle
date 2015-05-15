@@ -12,5 +12,6 @@ class SoilDiscoverBundle extends Bundle
     {
         $httpClient = new Client();
         Http::setDefaultHttpClient($httpClient);
+
     }
 }
