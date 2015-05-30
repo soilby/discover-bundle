@@ -65,9 +65,15 @@ class Resolver {
         foreach ($resources as $resource)  {
             $types = ($type = $resource->type()) ? [$type] : [];
 
-            $additionalTypeResource = $resource->get('schema:additionalType');
+            $additionalTypeResource = $resource->getResource('schema:additionalType');
+//            $s = print_r($additionalTypeResource, true);
+//            $this->logger->addInfo($s);
+
             if ($additionalTypeResource)    {
                 $additionalType = $additionalTypeResource->getUri();
+//                $this->logger->addInfo($additionalType);
+//                $this->logger->addInfo(RdfNamespace::shorten($additionalType));
+
                 $types[] = RdfNamespace::shorten($additionalType);
             }
 
@@ -101,7 +107,7 @@ class Resolver {
 
                 return $this->entityFactory->factory($types, $props);
 
-                }
+            }
             else    {
                 $fetchedEntities[] =  $this->entityFactory->factory($types, $props);
             }

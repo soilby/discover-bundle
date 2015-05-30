@@ -19,6 +19,9 @@ class Agent extends Generic {
 
     protected $mbox;
 
+
+    protected $phone;
+
     /**
      * @var string
      *
@@ -161,6 +164,35 @@ class Agent extends Generic {
     {
         $this->locale = $locale;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
+    public function getPhoneNumber()    {
+        $phoneURI = (string) $this->phone;
+        $colonPosition = strpos($phoneURI, ':');
+
+        if ($colonPosition === false) {
+            return $phoneURI;
+        }
+        else    {
+            return $phone = substr($phoneURI, $colonPosition + 1);
+        }
+    }
+
+    /**
+     * @param mixed $phone
+     */
+    public function setPhone($phone)
+    {
+        $this->phone = $phone;
+    }
+
 
 
 
