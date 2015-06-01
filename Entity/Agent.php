@@ -181,7 +181,7 @@ class Agent extends Generic {
             return $phoneURI;
         }
         else    {
-            return $phone = substr($phoneURI, $colonPosition + 1);
+            return substr($phoneURI, $colonPosition + 1);
         }
     }
 
