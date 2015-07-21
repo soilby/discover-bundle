@@ -92,6 +92,7 @@ class Resolver {
             $props['_origin'] = $uri;
 
             if ($getFirstOfClass)   { //hook for filter fetched entities
+
                 if (is_string($getFirstOfClass)) {
                     $classSpec = $this->entityFactory->detectEntityClass($types);
 
@@ -111,6 +112,10 @@ class Resolver {
             else    {
                 $fetchedEntities[] =  $this->entityFactory->factory($types, $props);
             }
+        }
+
+        if ($getFirstOfClass)   {
+            throw new NothingLoadedException("Required entity not found");
         }
 
         $this->logger->addInfo('Fetched entities: ' . count($fetchedEntities));
