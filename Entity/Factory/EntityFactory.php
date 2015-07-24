@@ -14,6 +14,7 @@ use EasyRdf\Literal\Date;
 use EasyRdf\Literal\DateTime;
 use EasyRdf\Resource;
 use Monolog\Logger;
+use Soil\EventProcessorBundle\Service\DeURInator;
 
 class EntityFactory {
 
@@ -22,6 +23,10 @@ class EntityFactory {
      */
     protected $logger;
 
+    /**
+     * @var DeURInator
+     */
+    protected $deURInator;
 
     protected $entityClassesMap = [];
 
@@ -31,8 +36,19 @@ class EntityFactory {
         }
     }
 
-    public function detectEntityClass($types)    {
+    public function detectEntityClass($types, $uri)    {
         if (is_scalar($types)) $types = [$types];
+
+        $info = [];
+
+        $uriSpec = $this->deURInator->parseUri($uri);
+
+        if ($uriSpec)   {
+            $info['parsedNamespace'] = $uriSpec['parsedType'];
+            $info['namespace'] = $uriSpec['type'];
+            $info['uniquePart'] = $uriSpec['id'];
+        }
+
 
         foreach ($types as $type) {
 
@@ -40,21 +56,22 @@ class EntityFactory {
 
             $className = $this->entityClassesMap[$type];
 
-            return [
-                'className' => $className,
-                'type' => $type
-            ];
+            $info['className'] = $className;
+            $info['type'] = $type;
+
+            return $info;
         }
 
         reset($types);
-        return [
-            'className' => 'Soil\DiscoverBundle\Entity\Generic',
-            'type' => current($types)
-        ];
+
+        $info['type'] = current($types);
+        $info['className'] = 'Soil\DiscoverBundle\Entity\Generic';
+
+        return $info;
     }
 
     public function factory($type, $fields)   {
-        $classSpec = $this->detectEntityClass($type);
+        $classSpec = $this->detectEntityClass($type, $fields['_origin']);
         if (!$classSpec)    {
             return null;
         }
@@ -69,6 +86,12 @@ class EntityFactory {
         $reflectionClass = new \ReflectionClass($object);
 
         $properties = $reflectionClass->getProperties();
+
+        if ($reflectionClass->hasProperty('rdfNamespace')) {
+            $namespaceProp = $reflectionClass->getProperty('rdfNamespace');
+            $namespaceProp->setAccessible(true);
+            $namespaceProp->setValue($object, $classSpec['parsedNamespace']);
+        }
 
 
         $fieldsMap = [];
@@ -134,6 +157,8 @@ class EntityFactory {
             }
             else    {
                 //via set method
+//                echo $propertyName;
+//                var_dump($value);
                 $object->$propertyName = $value;
             }
 
@@ -147,5 +172,17 @@ class EntityFactory {
     public function setLogger($logger)  {
         $this->logger = $logger;
     }
+
+    /**
+     * @param mixed $deURInator
+     */
+    public function setDeURInator($deURInator)
+    {
+        $this->deURInator = $deURInator;
+    }
+
+
+
+
 
 }

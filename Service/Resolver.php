@@ -26,6 +26,8 @@ class Resolver {
 
     protected $namespacesConfig;
 
+    protected $localCache = [];
+
     public function __construct($entityFactory, $namespacesConfig) {
         $this->entityFactory = $entityFactory;
 
@@ -40,6 +42,12 @@ class Resolver {
     public function getEntityForURI($uri, $getFirstOfClass = null)   {
 
         $this->logger->addInfo('Try to discover ' . $uri);
+        $cacheKey = md5($uri . $getFirstOfClass);
+
+        if (array_key_exists($cacheKey, $this->localCache)) {
+            $this->logger->addAlert('Return from cache!');
+            return $this->localCache[$cacheKey];
+        }
 
         if ($getFirstOfClass)   {
             if ($getFirstOfClass === true)  {
@@ -61,6 +69,7 @@ class Resolver {
 
         $resources = $graph->resources();
         $this->logger->addInfo('Resources found: ' . count($resources));
+
 
         foreach ($resources as $resource)  {
             $types = ($type = $resource->type()) ? [$type] : [];
@@ -94,7 +103,7 @@ class Resolver {
             if ($getFirstOfClass)   { //hook for filter fetched entities
 
                 if (is_string($getFirstOfClass)) {
-                    $classSpec = $this->entityFactory->detectEntityClass($types);
+                    $classSpec = $this->entityFactory->detectEntityClass($types, $uri);
 
                     if ($classSpec['className'] !== $getFirstOfClass) {
                         $this->logger->addInfo('Skip entitySkip entity ' . $classSpec['className']);
@@ -119,6 +128,8 @@ class Resolver {
         }
 
         $this->logger->addInfo('Fetched entities: ' . count($fetchedEntities));
+
+        $this->localCache[$cacheKey] = $fetchedEntities;
 
         return $fetchedEntities;
 

@@ -4,6 +4,7 @@ namespace Soil\DiscoverBundle\Controller;
 
 use Doctrine\ORM\Internal\Hydration\ObjectHydrator;
 use EasyRdf\Literal;
+use Soil\DiscoverBundle\Entity\Generic;
 use Soil\DiscoverBundle\Service\Resolver;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,21 +23,32 @@ class DefaultController
 
         if (is_object($entities))   {
 
-            $reflectionClass = new \ReflectionClass($entities);
-            $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
+            if ($entities instanceof Generic)   {
+                $entities = $entities->getValues();
+            }
+            else {
 
-            $hash = [];
-            foreach ($methods as $method)   {
-                $methodName = $method->getName();
 
-                if (strpos($methodName, 'get') === 0 && ctype_upper($methodName[3]))    {
-                    $value = $method->invoke($entities);
-                    $hash[$methodName] = $value;
+                $reflectionClass = new \ReflectionClass($entities);
+                $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
+
+                $hash = [];
+                foreach ($methods as $method) {
+                    $methodName = $method->getName();
+
+                    if (strpos($methodName, 'get') === 0 && ctype_upper($methodName[3])) {
+                        $value = $method->invoke($entities);
+                        $hash[$methodName] = $value;
+                    }
+
                 }
+
+
+                $entities = $hash;
             }
 
 
-            $entities = $hash;
+
 
         }
 
@@ -68,7 +80,8 @@ class DefaultController
             else    {
                 $data[] = [
                     'name' => $name,
-                    'value' => $element
+                    'value' => $element,
+                    'class' => 'not a class'
                 ];
             }
         }
@@ -85,6 +98,7 @@ class DefaultController
     {
         $expected_class = true;
         $entitiesArr = $this->resolver->getEntityForURI($entity_uri, $expected_class);
+//        var_dump($entitiesArr);
 
         if (is_object($entitiesArr))    {
             $class = get_class($entitiesArr);

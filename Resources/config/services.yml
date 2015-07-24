@@ -16,5 +16,8 @@ services:
         arguments: [%entity_classes%]
         calls:
             - [setLogger, [@logger]]
+
+#            FIXME: Should be set via config param and compiler pass
+            - [setDeURInator, [@soil_event_processor.deurinator]]
         tags:
             - { name: monolog.logger, channel: queue }

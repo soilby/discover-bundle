@@ -16,6 +16,8 @@ class Generic {
 
     protected $values = [];
 
+    protected $rdfNamespace;
+
 
     /**
      * Add access by origin names
@@ -53,6 +55,26 @@ class Generic {
     public function setOrigin($origin)
     {
         $this->origin = $origin;
+    }
+
+    public function getValues() {
+        return $this->values;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRdfNamespace()
+    {
+        return $this->rdfNamespace;
+    }
+
+    /**
+     * @param mixed $rdfNamespace
+     */
+    public function setRdfNamespace($rdfNamespace)
+    {
+        $this->rdfNamespace = $rdfNamespace;
     }
 
 
