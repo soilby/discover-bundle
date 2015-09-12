@@ -19,102 +19,107 @@ class DefaultController
     }
 
     protected function dumpEntity($entities)  {
-        $data = [];
 
-        if (is_object($entities))   {
+            $data = [];
 
-            if ($entities instanceof Generic)   {
-                $entities = $entities->getValues();
-            }
-            else {
+            if (is_object($entities)) {
+
+                if ($entities instanceof Generic) {
+                    $entities = $entities->getValues();
+                } else {
 
 
-                $reflectionClass = new \ReflectionClass($entities);
-                $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
+                    $reflectionClass = new \ReflectionClass($entities);
+                    $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
 
-                $hash = [];
-                foreach ($methods as $method) {
-                    $methodName = $method->getName();
+                    $hash = [];
+                    foreach ($methods as $method) {
+                        $methodName = $method->getName();
 
-                    if (strpos($methodName, 'get') === 0 && ctype_upper($methodName[3])) {
-                        $value = $method->invoke($entities);
-                        $hash[$methodName] = $value;
+                        if (strpos($methodName, 'get') === 0 && ctype_upper($methodName[3])) {
+                            $value = $method->invoke($entities);
+                            $hash[$methodName] = $value;
+                        }
+
                     }
 
+
+                    $entities = $hash;
                 }
 
 
-                $entities = $hash;
             }
 
+            foreach ($entities as $name => $element) {
+                if (is_object($element)) {
+                    switch (true) {
+                        case $element instanceof Literal\DateTime:
+                        case $element instanceof Literal\Date:
+                            $value = $element->getValue()->format('Y-m-d H:i:s');
+                            break;
 
+                        case $element instanceof Literal:
+                            $value = $element->getValue();
+                            break;
 
+                        default:
+                            $value = $this->dumpEntity($element);
 
-        }
+                            break;
+                    }
+                    $class = get_class($element);
 
-        foreach ($entities as $name => $element)   {
-            if (is_object($element)) {
-                switch (true)   {
-                    case $element instanceof Literal\DateTime:
-                    case $element instanceof Literal\Date:
-                        $value = $element->getValue()->format('Y-m-d H:i:s');
-                        break;
-
-                    case $element instanceof Literal:
-                        $value = $element->getValue();
-                        break;
-
-                    default:
-                        $value = $this->dumpEntity($element);
-
-                        break;
+                    $data[] = [
+                        'class' => $class,
+                        'name' => $name,
+                        'value' => $value
+                    ];
+                } else {
+                    $data[] = [
+                        'name' => $name,
+                        'value' => $element,
+                        'class' => 'not a class'
+                    ];
                 }
-                $class = get_class($element);
-
-                $data[] = [
-                    'class' => $class,
-                    'name' => $name,
-                    'value' => $value
-                ];
             }
-            else    {
-                $data[] = [
-                    'name' => $name,
-                    'value' => $element,
-                    'class' => 'not a class'
-                ];
-            }
-        }
 
-//        if (!is_array($entities))   {
-//            return current($data);
-//        }
-//        else    {
+            //        if (!is_array($entities))   {
+            //            return current($data);
+            //        }
+            //        else    {
             return $data;
-//        }
+            //        }
+
+
     }
 
     public function discoverAction($entity_uri)
     {
-        $expected_class = true;
-        $entitiesArr = $this->resolver->getEntityForURI($entity_uri, $expected_class);
-//        var_dump($entitiesArr);
+        try {
+            $expected_class = true;
+            $entitiesArr = $this->resolver->getEntityForURI($entity_uri, $expected_class);
+    //        var_dump($entitiesArr);
 
-        if (is_object($entitiesArr))    {
-            $class = get_class($entitiesArr);
+            if (is_object($entitiesArr))    {
+                $class = get_class($entitiesArr);
+            }
+            else    {
+                $class = '';
+            }
+
+            $data = $this->dumpEntity($entitiesArr, $expected_class);
+
+            $content = $this->templating->render('SoilDiscoverBundle:Default:index.html.twig', [
+                'class' => $class,
+                'graph' => $data,
+                'uri' => $entity_uri
+            ]);
+
+            return new Response($content);
         }
-        else    {
-            $class = '';
+        catch(\Exception $e)    {
+            echo $e;
+            exit();
         }
-
-        $data = $this->dumpEntity($entitiesArr, $expected_class);
-
-        $content = $this->templating->render('SoilDiscoverBundle:Default:index.html.twig', [
-            'class' => $class,
-            'graph' => $data,
-            'uri' => $entity_uri
-        ]);
-
-        return new Response($content);
     }
 }

@@ -70,7 +70,6 @@ class Resolver {
         $resources = $graph->resources();
         $this->logger->addInfo('Resources found: ' . count($resources));
 
-
         foreach ($resources as $resource)  {
             $types = ($type = $resource->type()) ? [$type] : [];
 
@@ -115,7 +114,10 @@ class Resolver {
                     //return only one entity with specified type
                 }
 
-                return $this->entityFactory->factory($types, $props);
+                $entity = $this->entityFactory->factory($types, $props);
+                $this->localCache[$cacheKey] = $entity;
+
+                return $entity;
 
             }
             else    {

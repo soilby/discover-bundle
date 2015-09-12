@@ -48,6 +48,11 @@ class EntityFactory {
             $info['namespace'] = $uriSpec['type'];
             $info['uniquePart'] = $uriSpec['id'];
         }
+        else    {
+            $info['parsedNamespace'] = null;
+            $info['namespace'] = null;
+            $info['uniquePart'] = null;
+        }
 
 
         foreach ($types as $type) {
