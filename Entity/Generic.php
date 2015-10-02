@@ -8,8 +8,9 @@ use EasyRdf\Resource;
  * User: fliak
  * Date: 17.2.15
  * Time: 11.44
+ *
+ * @RDF\Vocab("tal")
  */
-
 class Generic {
 
     protected $origin;

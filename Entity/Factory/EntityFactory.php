@@ -54,7 +54,7 @@ class EntityFactory {
             $info['uniquePart'] = null;
         }
 
-
+//var_dump($this->entityClassesMap);
         foreach ($types as $type) {
 
             if (!array_key_exists($type, $this->entityClassesMap)) continue;
@@ -63,6 +63,17 @@ class EntityFactory {
 
             $info['className'] = $className;
             $info['type'] = $type;
+
+            if (!$info['parsedNamespace'])  {
+                if (property_exists($className, 'talakaNamespace')) {
+                    $parsedNamespace = $className::$talakaNamespace;
+                    $info['parsedNamespace'] = $parsedNamespace;
+                }
+            }
+
+            if (!$info['parsedNamespace'])  {
+                $info['parsedNamespace'] = 'tal';
+            }
 
             return $info;
         }

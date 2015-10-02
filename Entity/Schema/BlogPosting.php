@@ -8,11 +8,10 @@
 
 namespace Soil\DiscoverBundle\Entity\Schema;
 
-use Soil\DiscoverBundle\Entity\Generic;
 
-class Thing extends Generic {
+class BlogPosting extends Thing {
 
-    public static $talakaNamespace = "tal";
+    public static $talakaNamespace = "talblog";
 
 
 }

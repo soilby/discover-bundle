@@ -13,9 +13,13 @@ use Soil\DiscoverBundle\Entity\Schema\ImageObject;
 
 use Soil\DiscoverBundle\Annotation as RDF;
 
-
+/**
+ * Class Agent
+ * @package Soil\DiscoverBundle\Entity
+ *
+ * @RDF\Vocab("foaf")
+ */
 class Agent extends Generic {
-
 
     protected $mbox;
 
