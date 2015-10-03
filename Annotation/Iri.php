@@ -15,7 +15,9 @@ namespace Soil\DiscoverBundle\Annotation;
  * @Annotation
  *
  */
-class Match {
+class Iri {
 
     public $value;
+
+    public $persist = true;
 }

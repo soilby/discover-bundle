@@ -10,7 +10,12 @@ namespace Soil\DiscoverBundle\Entity;
 
 use Soil\DiscoverBundle\Annotation as RDF;
 
-class TalakoshtCampaign extends Generic {
+/**
+ * Class TalakoshtCampaign
+ * @package Soil\DiscoverBundle\Entity
+ * @RDF\Iri("tal:TalakoshtCampaign")
+ */
+class TalakoshtCampaign extends TalakaProject {
 
 
     protected $campaignType;
@@ -21,7 +26,7 @@ class TalakoshtCampaign extends Generic {
 
     /**
      * @var
-     * @RDF\Match("schema:alternateName")
+     * @RDF\Iri("schema:alternateName")
      */
     protected $id;
 

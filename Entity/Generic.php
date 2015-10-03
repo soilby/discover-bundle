@@ -2,6 +2,7 @@
 namespace Soil\DiscoverBundle\Entity;
 use EasyRdf\Literal;
 use EasyRdf\Resource;
+use Soil\DiscoverBundle\Annotation as RDF;
 
 /**
  * Created by PhpStorm.
@@ -10,6 +11,7 @@ use EasyRdf\Resource;
  * Time: 11.44
  *
  * @RDF\Vocab("tal")
+ * @RDF\Iri("tal:GenericTalakaEntity")
  */
 class Generic {
 

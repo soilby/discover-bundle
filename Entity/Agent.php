@@ -18,6 +18,7 @@ use Soil\DiscoverBundle\Annotation as RDF;
  * @package Soil\DiscoverBundle\Entity
  *
  * @RDF\Vocab("foaf")
+ * @RDF\Iri("tal:GenericTalakaAgent")
  */
 class Agent extends Generic {
 
@@ -29,18 +30,24 @@ class Agent extends Generic {
     /**
      * @var string
      *
-     * @RDF\Match("foaf:firstName")
+     * @RDF\Iri(value="foaf:firstName", persist=false)
      *
      */
     protected $firstName;
 
+    /**
+     * @var string
+     *
+     * @RDF\Iri(value="foaf:lastName", persist=false)
+     *
+     */
     protected $lastName;
 
 
     /**
      * @var string
      *
-     * @RDF\Match("foaf:name")
+     * @RDF\Iri(value="foaf:name", persist=false)
      *
      */
     protected $displayName;
@@ -48,14 +55,14 @@ class Agent extends Generic {
     /**
      * @var ImageObject
      *
-     * @RDF\Match("foaf:image")
+     * @RDF\Iri(value="foaf:image", persist=false)
      */
     protected $img;
 
     /**
      * @var
      *
-     * @RDF\Match("foaf:locale")
+     * @RDF\Iri(value="foaf:locale", persist=false)
      *
      */
     protected $locale;

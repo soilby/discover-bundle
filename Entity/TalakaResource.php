@@ -13,14 +13,10 @@ use Soil\DiscoverBundle\Annotation as RDF;
 /**
  * Class TalakaProject
  * @package Soil\DiscoverBundle\Entity
- * @RDF\Iri("tal:TalakaProject")
+ * @RDF\Iri("tal:TalakaResource")
  */
-class TalakaProject extends Generic {
+class TalakaResource extends Generic {
 
-
-    protected $image;
-
-    protected $name;
 
     /**
      * @var
@@ -53,37 +49,6 @@ class TalakaProject extends Generic {
         $this->id = $id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     * @param mixed $image
-     */
-    public function setImage($image)
-    {
-        $this->image = $image;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param mixed $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
 
     /**
      * @return mixed

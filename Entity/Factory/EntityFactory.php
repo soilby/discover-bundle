@@ -113,7 +113,7 @@ class EntityFactory {
         $fieldsMap = [];
         foreach ($properties as $reflectionProperty)    {
 
-            $matchAnnotation = $annotationReader->getPropertyAnnotation($reflectionProperty, 'Soil\DiscoverBundle\Annotation\Match');
+            $matchAnnotation = $annotationReader->getPropertyAnnotation($reflectionProperty, 'Soil\DiscoverBundle\Annotation\Iri');
 
             if ($matchAnnotation)    {
                 $match = $matchAnnotation->value;
@@ -134,6 +134,8 @@ class EntityFactory {
                 }
             }
 
+//var_dump($field);
+//            if (is_object($value)) var_dump(get_class($value)); else var_dump($value);
 
             //detect value type
             switch (true)   {
