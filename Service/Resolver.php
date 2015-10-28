@@ -11,6 +11,7 @@ namespace Soil\DiscoverBundle\Service;
 
 use EasyRdf\Graph;
 use EasyRdf\RdfNamespace;
+use Soil\DiscoverBundle\Entity\Generic;
 use Soil\DiscoverBundle\Service\Exception\NothingLoadedException;
 use Symfony\Bridge\Monolog\Logger;
 
@@ -39,6 +40,14 @@ class Resolver {
     }
 
 
+    /**
+     * @param $uri
+     * @param null $getFirstOfClass
+     * @return array|Generic
+     * @throws NothingLoadedException
+     * @throws \EasyRdf\Exception
+     * @throws \EasyRdf\Http\Exception
+     */
     public function getEntityForURI($uri, $getFirstOfClass = null)   {
 
         $this->logger->addInfo('Try to discover ' . $uri);

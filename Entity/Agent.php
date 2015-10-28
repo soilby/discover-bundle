@@ -24,6 +24,8 @@ class Agent extends Generic {
 
     protected $mbox;
 
+    protected $environment;
+
 
     protected $phone;
 
@@ -202,6 +204,22 @@ class Agent extends Generic {
     public function setPhone($phone)
     {
         $this->phone = $phone;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
+
+    /**
+     * @param mixed $environment
+     */
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
     }
 
 
