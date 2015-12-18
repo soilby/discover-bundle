@@ -12,7 +12,7 @@ class Client extends EasyRdfHttpClient {
         $rawResponse = $firstResponse->getHeadersAsString(true, $br)
             . $br
             . mb_convert_encoding($firstResponse->getRawBody(), 'HTML-ENTITIES', 'UTF-8');
-
+//        var_dump($rawResponse);
         return Response::fromString($rawResponse);
     }
 } 

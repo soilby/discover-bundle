@@ -22,12 +22,8 @@ class DefaultController
 
             $data = [];
 
+
             if (is_object($entities)) {
-
-                if ($entities instanceof Generic) {
-                    $entities = $entities->getValues();
-                } else {
-
 
                     $reflectionClass = new \ReflectionClass($entities);
                     $methods = $reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC);
@@ -44,8 +40,14 @@ class DefaultController
                     }
 
 
+                if ($entities instanceof Generic) {
+                    $entities = $hash + $entities->getValues();
+                }
+                else    {
                     $entities = $hash;
                 }
+
+
 
 
             }

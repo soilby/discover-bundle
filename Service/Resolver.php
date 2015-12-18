@@ -10,8 +10,10 @@ namespace Soil\DiscoverBundle\Service;
 
 
 use EasyRdf\Graph;
+use EasyRdf\Http;
 use EasyRdf\RdfNamespace;
 use Soil\DiscoverBundle\Entity\Generic;
+use Soil\DiscoverBundle\Http\Client;
 use Soil\DiscoverBundle\Service\Exception\NothingLoadedException;
 use Symfony\Bridge\Monolog\Logger;
 
@@ -37,6 +39,13 @@ class Resolver {
         foreach ($this->namespacesConfig as $namespace => $uri) {
             \EasyRdf\RdfNamespace::set($namespace, $uri);
         }
+
+        $client = new Client();
+        $client->setConfig([
+            'timeout' => 100
+        ]);
+
+        Http::setDefaultHttpClient($client);
     }
 
 
