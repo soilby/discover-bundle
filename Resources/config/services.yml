@@ -1,13 +1,13 @@
 services:
     soil_discover.controller.discover_controller:
         class: Soil\DiscoverBundle\Controller\DefaultController
-        arguments: [@soil_discover.service.resolver, @templating]
+        arguments: ['@soil_discover.service.resolver', '@templating']
 
     soil_discover.service.resolver:
         class: Soil\DiscoverBundle\Service\Resolver
-        arguments: [@soil_discover.entity_factory, %semantic_namespaces%]
+        arguments: ['@soil_discover.entity_factory', %semantic_namespaces%]
         calls:
-            - [setLogger, [@logger]]
+            - [setLogger, ['@logger']]
         tags:
             - { name: monolog.logger, channel: queue }
 
@@ -15,9 +15,9 @@ services:
         class: Soil\DiscoverBundle\Entity\Factory\EntityFactory
         arguments: [%entity_classes%]
         calls:
-            - [setLogger, [@logger]]
+            - [setLogger, ['@logger']]
 
 #            FIXME: Should be set via config param and compiler pass
-            - [setDeURInator, [@soil_event_processor.deurinator]]
+            - [setDeURInator, ['@soil_event_processor.deurinator']]
         tags:
             - { name: monolog.logger, channel: queue }
