@@ -21,6 +21,7 @@ class Generic {
 
     protected $rdfNamespace;
 
+    protected $uri;
 
     /**
      * Add access by origin names
@@ -80,6 +81,23 @@ class Generic {
         $this->rdfNamespace = $rdfNamespace;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
 
+    /**
+     * @param mixed $uri
+     */
+    public function setUri($uri)
+    {
+        $this->uri = $uri;
+    }
+
+    
+    
 
 } 

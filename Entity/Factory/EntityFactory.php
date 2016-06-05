@@ -87,7 +87,8 @@ class EntityFactory {
     }
 
     public function factory($type, $fields)   {
-        $classSpec = $this->detectEntityClass($type, $fields['_origin']);
+        $uri = $fields['_origin'];
+        $classSpec = $this->detectEntityClass($type, $uri);
         if (!$classSpec)    {
             return null;
         }
@@ -96,6 +97,7 @@ class EntityFactory {
         $type = $classSpec['type'];
 
         $object = new $className($type);
+        $object->setURI($uri);
 
         $annotationReader = new AnnotationReader();
 

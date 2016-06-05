@@ -211,7 +211,20 @@ class Agent extends Generic {
      */
     public function getEnvironment()
     {
-        return $this->environment;
+        if ($this->environment) {
+            return $this->environment;
+        }
+
+        $uri = $this->getUri();
+        if (
+            strpos($uri, 'http://talaka.by') === 0 ||
+            strpos($uri, 'http://www.talaka.by') === 0
+        ) {
+            return 'production';
+        }
+
+        return 'development';
+
     }
 
     /**
