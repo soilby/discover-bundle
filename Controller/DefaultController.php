@@ -31,7 +31,7 @@ class DefaultController
                     $hash = [];
                     foreach ($methods as $method) {
                         $methodName = $method->getName();
-
+                        if ($methodName === 'getValues') continue;
                         if (strpos($methodName, 'get') === 0 && ctype_upper($methodName[3])) {
                             $value = $method->invoke($entities);
                             $hash[$methodName] = $value;
@@ -40,8 +40,12 @@ class DefaultController
                     }
 
 
-                if ($entities instanceof Generic) {
-                    $entities = $hash + $entities->getValues();
+                if (method_exists($entities, 'getValues')) {
+                    $values = $entities->getValues();
+
+//                    $entities = $hash + json_encode($values);
+                    $hash['getValues'] = json_encode($values);
+                    $entities = $hash;
                 }
                 else    {
                     $entities = $hash;
@@ -80,7 +84,7 @@ class DefaultController
                     $data[] = [
                         'name' => $name,
                         'value' => $element,
-                        'class' => 'not a class'
+                        'class' => null
                     ];
                 }
             }
@@ -93,6 +97,29 @@ class DefaultController
             //        }
 
 
+    }
+
+    public function printMe($object)    {
+        foreach ($object as $key => $element) {
+
+            echo $element['name'];
+
+            echo ' ';
+            if (is_array($element['value']))  {
+                $this->printMe($element['value']);
+            }
+            else    {
+                echo($element['value']);
+
+            }
+
+            if ($element['class']) {
+                echo ' [' . $element['class'] . ']';
+            }
+
+            echo '<hr>';
+
+        }
     }
 
     public function discoverAction($entity_uri)
@@ -110,7 +137,10 @@ class DefaultController
             }
 
             $data = $this->dumpEntity($entitiesArr, $expected_class);
+echo '<pre>';
+            $this->printMe($data);
 
+exit;
             $content = $this->templating->render('SoilDiscoverBundle:Default:index.html.twig', [
                 'class' => $class,
                 'graph' => $data,

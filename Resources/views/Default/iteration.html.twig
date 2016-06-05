@@ -1,7 +1,9 @@
 {% for element in graph %}
     <div style="margin-top: 10px;">
+        {% if element is iterable %}
         {{ element.name }} =
                 {% if element.value is iterable %}
+
                     {{ element.class }}
                     <div style="margin-left: 20px;">
                         {% include "SoilDiscoverBundle:Default:iteration.html.twig" with { graph: element.value }  %}
@@ -9,6 +11,9 @@
                 {% else %}
                     {{ element.value }}
                 {% endif %}
+        {% else %}
+            {{ element }}
+        {% endif %}
 
     </div>
 {% endfor %}
