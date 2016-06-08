@@ -8,13 +8,31 @@ class Client extends EasyRdfHttpClient {
     public function request($method = null) {
 
         $uri = $this->getUri();
-        if (strpos($uri, 'http://talaka.by') === false && strpos($uri, 'http://www.talaka.by') === false)   {
+        
+        $components = parse_url($uri);
 
-            $username = "taluser";
-            $password = "Qe8hExas";
-            $basicAuthHash = base64_encode($username.":".$password);
+        switch ($components['host'])    {
+            case 'dev.talaka.by':
+            case 'stage.talaka.by':
+            case 'dev2.talaka.by':
+                $username = "taluser";
+                $password = "Qe8hExas";
+                $basicAuthHash = base64_encode($username.":".$password);
+    
+                $this->setHeaders('Authorization', "Basic $basicAuthHash");
+                
+                break;
             
-            $this->setHeaders('Authorization', "Basic $basicAuthHash");
+            case 'api.talaka.by':
+            case 'dev.api.talaka.by':
+            case 'test.api.talaka.by':
+                $this->setParameterGet('token', '2d41c1824a8f7cdf0a8ae01f354b6056');
+                break;
+
+            default:
+            case 'www.talaka.by':
+            case 'talaka.by':
+                break;
         }
 
         $firstResponse = parent::request($method);

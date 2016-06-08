@@ -24,6 +24,11 @@ class Resolver {
      */
     protected $logger;
 
+    /**
+     * @var Graph
+     */
+    protected $lastGraph;
+
 
     protected $entityFactory;
 
@@ -47,6 +52,18 @@ class Resolver {
 
         Http::setDefaultHttpClient($client);
     }
+    
+    
+    public function getDocument($uri)   {
+        $graph = new Graph();
+        $number = $graph->load($uri, 'jsonld');
+        if ($number === 0)  {
+            throw new NothingLoadedException('Nothing loaded for URI: ' . $uri);
+        }
+        
+        return $graph;
+    }
+    
 
 
     /**
@@ -82,7 +99,9 @@ class Resolver {
         if ($number === 0)  {
             throw new NothingLoadedException('Nothing loaded for URI: ' . $uri);
         }
-
+        
+        $this->lastGraph = $graph;
+        
         $fetchedEntities = [];
 
         $resources = $graph->resources();
@@ -160,4 +179,14 @@ class Resolver {
     public function setLogger($logger)  {
         $this->logger = $logger;
     }
+
+    /**
+     * @return Graph
+     */
+    public function getLastGraph()
+    {
+        return $this->lastGraph;
+    }
+    
+    
 }

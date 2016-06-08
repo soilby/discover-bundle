@@ -139,6 +139,10 @@ class DefaultController
             $data = $this->dumpEntity($entitiesArr, $expected_class);
 echo '<pre>';
             $this->printMe($data);
+            
+            echo '<hr />';
+            
+            echo $this->resolver->getLastGraph()->dump();
 
 exit;
             $content = $this->templating->render('SoilDiscoverBundle:Default:index.html.twig', [
